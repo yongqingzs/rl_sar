@@ -286,6 +286,37 @@ if($ENV{ROS_DISTRO} MATCHES "foxy|humble")
     endif()
 endif()
 
+# free_dog_sdk
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64|ARM64")
+    message(STATUS "Current system architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+    set(ARCH_DIR "aarch64")
+    set(FREE_DOG_LIB "libfdsc_utils_arm64")
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|AMD64")
+message(STATUS "Current system architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+    set(ARCH_DIR "x86_64")
+    set(FREE_DOG_LIB "libfdsc_utils_amd64")
+else()
+    message(FATAL_ERROR "Unsupported architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+endif()
+
+
+if(SYSTEM_TYPE STREQUAL "Linux")
+add_library(free_dog_sdk SHARED IMPORTED)
+set_target_properties(free_dog_sdk PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/library/thirdparty/robot_sdk/unitree/free_dog_sdk_cpp/fdsc_utils/include"
+    IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/library/thirdparty/robot_sdk/unitree/free_dog_sdk_cpp/fdsc_utils/lib/${FREE_DOG_LIB}.so"
+)
+set(UNITREE_GO1_LIBS Threads::Threads free_dog_sdk)
+if($ENV{ROS_DISTRO} MATCHES "foxy|humble")
+    file(GLOB GLOB_FREE_DOG_SDK "${CMAKE_CURRENT_SOURCE_DIR}/library/thirdparty/robot_sdk/unitree/free_dog_sdk_cpp/fdsc_utils/lib/${FREE_DOG_LIB}.so")
+    install(FILES
+        ${GLOB_FREE_DOG_SDK}
+        DESTINATION lib/
+    )
+    endif()
+endif()
+
+
 # unitree_sdk2
 if(SYSTEM_TYPE STREQUAL "Linux")
 set(BUILD_EXAMPLES OFF CACHE BOOL "Disable examples build for unitree_sdk2" FORCE)
@@ -443,6 +474,28 @@ if(SYSTEM_TYPE STREQUAL "Linux")
                 geometry_msgs
             )
             install(TARGETS rl_real_a1 DESTINATION lib/${PROJECT_NAME})
+        endif()
+    endif()
+endif()
+
+# executable for rl real go1
+if(SYSTEM_TYPE STREQUAL "Linux")
+    add_executable(rl_real_go1 src/rl_real_go1.cpp)
+    target_link_libraries(rl_real_go1
+        ${UNITREE_GO1_LIBS}
+        rl_sdk
+        observation_buffer
+            ${YAML_CPP_LIBRARIES}
+    )
+    if(NOT USE_CMAKE)
+        if($ENV{ROS_DISTRO} MATCHES "noetic")
+            target_link_libraries(rl_real_go1 ${catkin_LIBRARIES})
+        elseif($ENV{ROS_DISTRO} MATCHES "foxy|humble")
+            ament_target_dependencies(rl_real_go1
+                rclcpp
+                geometry_msgs
+            )
+            install(TARGETS rl_real_go1 DESTINATION lib/${PROJECT_NAME})
         endif()
     endif()
 endif()

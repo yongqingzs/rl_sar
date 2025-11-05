@@ -13,3 +13,6 @@
 [submodule "src/rl_sar/library/thirdparty/joystick"]
 	path = src/rl_sar/library/thirdparty/joystick
 	url = https://github.com/drewnoakes/joystick.git
+[submodule "src/rl_sar/library/thirdparty/robot_sdk/unitree/free_dog_sdk_cpp"]
+	path = src/rl_sar/library/thirdparty/robot_sdk/unitree/free_dog_sdk_cpp
+	url = https://github.com/yongqingzs/free_dog_sdk_cpp.git

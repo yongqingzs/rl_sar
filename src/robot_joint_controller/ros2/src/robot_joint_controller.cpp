@@ -147,7 +147,7 @@ controller_interface::return_type RobotJointController::update()
     UpdateFunc(period_seconds);
     return controller_interface::return_type::OK;
 }
-#elif defined(ROS_DISTRO_HUMBLE)
+#elif defined(ROS_DISTRO_HUMBLE) || defined(ROS_DISTRO_JAZZY)
 controller_interface::return_type RobotJointController::update(const rclcpp::Time &time, const rclcpp::Duration &period)
 {
     const auto period_seconds = period.seconds();

@@ -15,7 +15,7 @@
 #if defined(ROS_DISTRO_FOXY)
 #include <realtime_tools/realtime_publisher.h>
 #include <realtime_tools/realtime_buffer.h>
-#elif defined(ROS_DISTRO_HUMBLE)
+#elif defined(ROS_DISTRO_HUMBLE) || defined(ROS_DISTRO_JAZZY)
 #include <realtime_tools/realtime_publisher.hpp>
 #include <realtime_tools/realtime_buffer.hpp>
 #endif
@@ -44,7 +44,7 @@ namespace robot_joint_controller
 {
 #if defined(ROS_DISTRO_FOXY)
     using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
-#elif defined(ROS_DISTRO_HUMBLE)
+#elif defined(ROS_DISTRO_HUMBLE) || defined(ROS_DISTRO_JAZZY)
     using CallbackReturn = controller_interface::CallbackReturn;
 #endif
 
@@ -57,7 +57,7 @@ public:
 #if defined(ROS_DISTRO_FOXY)
     ROBOT_JOINT_CONTROLLER_PUBLIC
     controller_interface::return_type update() override;
-#elif defined(ROS_DISTRO_HUMBLE)
+#elif defined(ROS_DISTRO_HUMBLE) || defined(ROS_DISTRO_JAZZY)
     ROBOT_JOINT_CONTROLLER_PUBLIC
     controller_interface::return_type update(const rclcpp::Time &time, const rclcpp::Duration &period) override;
     ROBOT_JOINT_CONTROLLER_PUBLIC
